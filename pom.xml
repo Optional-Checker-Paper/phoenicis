@@ -84,6 +84,13 @@
             </dependency>
         </dependencies>
     </dependencyManagement>
+    <dependencies>
+        <dependency>
+            <groupId>org.checkerframework</groupId>
+            <artifactId>checker-qual</artifactId>
+            <version>3.40.0</version>
+        </dependency>
+    </dependencies>
     <repositories>
         <repository>
             <id>jitpack.io</id>
@@ -268,6 +275,45 @@
                                 </goals>
                             </execution>
                         </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+        <profile>
+            <id>checkerframework</id>
+            <!-- If you omit the activation block, run mvn with "-P checkerframework" to run checkers. -->
+            <activation>
+                <jdk>[1.8,)</jdk>
+            </activation>
+            <build>
+                <plugins>
+                    <plugin>
+                        <artifactId>maven-compiler-plugin</artifactId>
+                        <version>3.11.0</version>
+                        <configuration>
+                            <fork>true</fork>
+                            <failOnError>false</failOnError>
+                            <!-- Must fork or else JVM arguments are ignored. -->
+                            <annotationProcessorPaths>
+                                <path>
+                                    <groupId>org.checkerframework</groupId>
+                                    <artifactId>checker</artifactId>
+                                    <version>3.40.0</version>
+                                </path>
+                            </annotationProcessorPaths>
+                            <annotationProcessors>
+                                <!-- Add all the checkers you want to enable here -->
+                                <annotationProcessor>org.checkerframework.checker.optional.OptionalChecker</annotationProcessor>
+                            </annotationProcessors>
+                            <compilerArgs>
+                                <arg>-Xmaxerrs</arg>
+                                <arg>10000</arg>
+                                <arg>-Xmaxwarns</arg>
+                                <arg>10000</arg>
+                                <!-- <arg>-Awarns</arg> -->
+                                <!-- -Awarns turns type-checking errors into warnings. -->
+                            </compilerArgs>
+                        </configuration>
                     </plugin>
                 </plugins>
             </build>
